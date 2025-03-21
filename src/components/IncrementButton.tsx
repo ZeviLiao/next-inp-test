@@ -20,9 +20,9 @@ const IncrementButton = React.memo(() => {
 
   return (
     <IconButton
-      onPointerDown={handleClick}
       // onPointerDown={handleClick}
       // onTouchStart={handleClick} // 會re-paint 2次。
+      onClick={handleClick} // 只畫一次。
       color="primary"
       sx={{ touchAction: 'manipulation' }}
       disableRipple
