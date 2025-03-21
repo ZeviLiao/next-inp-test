@@ -4,44 +4,18 @@ import { useState, useEffect, useCallback } from 'react';
 import { IconButton, Typography, Box, CircularProgress } from '@mui/material';
 import { Add, Remove } from '@mui/icons-material';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+// const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const Counter = () => {
   const [count, setCount] = useState(0);
-  const [isProcessing, setIsProcessing] = useState(false);
 
-  const increment = useCallback(async (e:
-    React.MouseEvent<HTMLButtonElement> |
-    React.TouchEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // 防止觸控觸發其他手勢
-    if (isProcessing) return; // 避免重複觸發
-    setIsProcessing(true);
-    const prevCount = count;
-    await sleep(500);
+  const increment = () => {
     setCount(prev => prev + 1);
-    if (prevCount === count) {
-      setIsProcessing(false);
-    }
-  }, [count, isProcessing]);
+  };
 
-  const decrement = useCallback(async (e:
-    React.MouseEvent<HTMLButtonElement> |
-    React.TouchEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (isProcessing) return;
-    setIsProcessing(true);
-    const prevCount = count;
-    await sleep(500);
+  const decrement = () => {
     setCount(prev => prev - 1);
-    if (prevCount === count) {
-      setIsProcessing(false);
-    }
-  }, [count, isProcessing]);
-
-  // 監聽 count 的變更來更新 disabled 狀態
-  useEffect(() => {
-    setIsProcessing(false);
-  }, [count]);
+  };
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" gap={2} mt={2}>
@@ -49,26 +23,20 @@ const Counter = () => {
       <Box display="flex" gap={2} alignItems="center">
         {/* 加號按鈕 */}
         <IconButton
-          onTouchStart={increment} // 手機用 touchstart 減少 100ms 延遲
-          onClick={increment} // 桌面仍用 onClick
+          onPointerDown={increment} // 手機用 touchstart 減少 100ms 延遲
           color="primary"
-          disabled={isProcessing}
-          disableRipple // 關閉波紋效果，減少渲染負擔
           sx={{ touchAction: 'manipulation' }} // 減少觸控延遲
         >
-          {isProcessing ? <CircularProgress size={24} /> : <Add />}
+          <Add />
         </IconButton>
 
         {/* 減號按鈕 */}
         <IconButton
-          onTouchStart={decrement}
-          onClick={decrement}
+          onPointerDown={decrement}
           color="secondary"
-          disabled={isProcessing}
-          disableRipple
           sx={{ touchAction: 'manipulation' }}
         >
-          {isProcessing ? <CircularProgress size={24} /> : <Remove />}
+          <Remove />
         </IconButton>
       </Box>
     </Box>
@@ -76,3 +44,8 @@ const Counter = () => {
 };
 
 export default Counter;
+
+
+// 觸控延遲減少：
+// 使用 onPointerDown 代替 onClick，避免了觸控設備上的 100ms 延遲（因為 onClick 在手機上會等待 touchstart 和 touchend 後的 100ms 手勢判斷）。
+// 加上 touch-action: manipulation，進一步告訴瀏覽器只處理點擊，不處理滑動或縮放，減少觸控延遲。
