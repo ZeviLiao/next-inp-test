@@ -1,9 +1,9 @@
 // import dynamic from 'next/dynamic';
-// import Counter from '@/components/Counter';
+import Counter from '@/components/Counter';
 
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 
-const Counter = dynamic(() => import('@/components/Counter'), { ssr: true }); // 允許 SSR，除非有客戶端依賴
+// const Counter = dynamic(() => import('@/components/Counter'), { ssr: true }); // 允許 SSR，除非有客戶端依賴
 
 export default function Home() {
   return (

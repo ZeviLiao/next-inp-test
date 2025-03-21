@@ -1,0 +1,80 @@
+'use client';
+
+import React, { useState, useCallback } from 'react';
+import { IconButton, Typography, Box, CircularProgress, Button } from '@mui/material';
+import { Add, Remove } from '@mui/icons-material';
+
+// const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const Counter = () => {
+  const [count, setCount] = useState(0);
+
+  const increment = (e:
+    React.PointerEvent<HTMLButtonElement>
+    | React.MouseEvent<HTMLButtonElement>
+    | React.TouchEvent<HTMLButtonElement>
+  ) => {
+    // e.preventDefault();
+    // e.stopPropagation(); // 阻止冒泡
+    setCount(prev => prev + 1);
+    console.log('youclicked');
+  };
+
+  const decrement = (e:
+    React.PointerEvent<HTMLButtonElement>
+    | React.MouseEvent<HTMLButtonElement>
+    | React.TouchEvent<HTMLButtonElement>
+  ) => {
+    // e.preventDefault();
+    setCount(prev => prev - 1);
+  };
+
+  return (
+    <Box display="flex" flexDirection="column" alignItems="center" gap={2} mt={2}>
+      <Typography variant="h4">Counter: {count}</Typography>
+      <Box display="flex" gap={2} alignItems="center">
+        {/* + */}
+        <IconButton
+          // onPointerDown={increment} // 會re-paint 2次。
+          // onTouchStart={increment} // 會re-paint 2次。
+          onClick={increment} // 只畫一次。
+          color="primary"
+          sx={{ touchAction: 'manipulation' }} // 有用，只設一個也不行。
+        // disableRipple
+        >
+          <Add />
+        </IconButton>
+
+        <Button
+          onPointerDown={() => {
+            console.log('clicked pointer down');
+            setCount(prev => prev + 1); // status change repaint again.
+          }} // 只畫一次。
+        // onTouchStart={() => console.log('clicked touch start')} // 只畫一次。
+        // onClick={() => console.log('clicked')} // 只畫一次。
+        >
+          Click test
+        </Button>
+
+        {/* - */}
+        <IconButton
+          // onPointerDown={decrement} // 無效
+          // onTouchStart={decrement} // 無效
+          onClick={decrement}
+          color="secondary"
+        // sx={{ touchAction: 'manipulation' }} // 有用。
+        // disableRipple
+        >
+          <Remove />
+        </IconButton>
+      </Box>
+    </Box >
+  );
+};
+
+export default Counter;
+
+
+// 觸控延遲減少：
+// 使用 onPointerDown 代替 onClick，避免了觸控設備上的 100ms 延遲（因為 onClick 在手機上會等待 touchstart 和 touchend 後的 100ms 手勢判斷）。
+// 加上 touch-action: manipulation，進一步告訴瀏覽器只處理點擊，不處理滑動或縮放，減少觸控延遲。
